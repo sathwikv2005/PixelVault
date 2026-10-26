@@ -1,6 +1,7 @@
 #include <exception>
 #include <iostream>
 
+#include "dct.hpp"
 #include "image.hpp"
 
 int main(int argc, char* argv[]) {
@@ -12,10 +13,13 @@ int main(int argc, char* argv[]) {
     try {
         pixelvault::Image image(argv[1]);
 
-        std::cout << "Image loaded successfully\n";
-        std::cout << "Width: " << image.width() << '\n';
-        std::cout << "Height: " << image.height() << '\n';
-        std::cout << "Channels: " << image.channels() << '\n';
+        cv::Mat coefficients = pixelvault::DCT::forward(image);
+        pixelvault::Image reconstructed =
+            pixelvault::DCT::inverse(coefficients);
+
+        reconstructed.saveToOutput("reconstructed.png");
+
+        std::cout << "DCT and inverse DCT completed successfully\n";
 
         return 0;
     } catch (const std::exception& e) {
